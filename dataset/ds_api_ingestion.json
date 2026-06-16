@@ -1,0 +1,19 @@
+{
+	"name": "ds_api_ingestion",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Https_ls",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "KeshavKumar-121/ADF_Project/refs/heads/main/DimAirport.json"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

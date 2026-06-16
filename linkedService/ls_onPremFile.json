@@ -1,0 +1,17 @@
+{
+	"name": "ls_onPremFile",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "C:\\Users\\user\\OneDrive\\Documents\\ADF_Project",
+			"userId": "raghuvanshikeshav9@gmail.com",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI5NGI5NTk3Ny0xZTM0LTRiMDYtOGE0NC1mOGQyZmE2MmEyNjQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "keshav-selfHostedIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

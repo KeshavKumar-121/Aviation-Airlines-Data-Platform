@@ -1,0 +1,15 @@
+{
+	"name": "AdfMedallionProjectKeshav",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastasia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "fb16fb67-7b1a-4016-a26c-230d1454969f",
+		"tenantId": "30a9ba6b-0e95-477e-92df-de923aa00e54"
+	}
+}
