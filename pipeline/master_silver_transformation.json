@@ -1,0 +1,113 @@
+{
+	"name": "master_silver_transformation",
+	"properties": {
+		"activities": [
+			{
+				"name": "Transform DimAirline",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_DimAirline"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks_LS",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Transform Flight",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_DimFlight"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks_LS",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Transform DimPassanger",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_DimPassanger"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks_LS",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Transform DimAirport",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_DimPassanger"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks_LS",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Transform FactBookings",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_DimPassanger"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks_LS",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"silver_error_array": {
+				"type": "Array"
+			}
+		},
+		"annotations": []
+	}
+}
