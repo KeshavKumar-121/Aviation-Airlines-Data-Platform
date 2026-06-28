@@ -58,85 +58,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "AzureSQLToDataLake",
+						"referenceName": "AzureSQLToDataLake_Ingestion",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
 				}
-			},
-			{
-				"name": "Check_For_Failures",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "SQL Ingestion",
-						"dependencyConditions": [
-							"Completed"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@or(\n    or(\n        not(empty(activity('OnPrem Ingestion').error)),\n        not(empty(activity('API Ingestion').error))\n    ),\n    not(empty(activity('SQL Ingestion').error))\n)",
-						"type": "Expression"
-					},
-					"ifTrueActivities": [
-						{
-							"name": "Set Dynamic Error",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "var_errormessage",
-								"value": {
-									"value": "@concat(\n    if(not(empty(activity('OnPrem Ingestion').error)), concat('❌ OnPrem Ingestion Failed: ', activity('OnPrem Ingestion').error.message, ' || '), ''),\n    if(not(empty(activity('API Ingestion').error)), concat('❌ API Ingestion Failed: ', activity('API Ingestion').error.message, ' || '), ''),\n    if(not(empty(activity('SQL Ingestion').error)), concat('❌ SQL Ingestion Failed: ', activity('SQL Ingestion').error.message), '')\n)",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Web1",
-							"type": "WebActivity",
-							"dependsOn": [
-								{
-									"activity": "Set Dynamic Error",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"method": "POST",
-								"url": "https://prod-22.eastasia.logic.azure.com:443/workflows/256645412ff64ee7a9bf270e838e0bd5/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=U5TnDIQ6U8IXK72WECopweujmb11vPZcihNVexa-WpA",
-								"body": {
-									"value": "{\n    \"pipeline_name\": \"@{pipeline().Pipeline}\",\n    \"run_id\": \"@{pipeline().RunId}\",\n    \"status\": \"Failed\",\n    \"error\": \"@{variables('var_errormessage')}\"\n}",
-									"type": "Expression"
-								}
-							}
-						}
-					]
-				}
 			}
 		],
-		"variables": {
-			"var_errormessage": {
-				"type": "String",
-				"defaultValue": "\"\""
-			}
-		},
 		"annotations": [],
 		"lastPublishTime": "2026-06-14T14:05:43Z"
 	},
