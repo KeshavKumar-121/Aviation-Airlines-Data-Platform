@@ -1,0 +1,13 @@
+{
+	"name": "AzureDatabricks_LS",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-7405614267729285.5.azuredatabricks.net",
+			"authentication": "MSI",
+			"workspaceResourceId": "/subscriptions/9d849563-5da6-4d41-b2eb-698aabb045b9/resourceGroups/ADF_Project/providers/Microsoft.Databricks/workspaces/Aviation_ADF_Databricks",
+			"existingClusterId": "0624-102401-ejz0soow"
+		}
+	}
+}
