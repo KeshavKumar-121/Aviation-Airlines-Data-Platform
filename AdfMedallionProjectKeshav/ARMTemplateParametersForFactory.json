@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "AdfMedallionProjectKeshav"
+		},
+		"datalake_ls_accountKey": {
+			"value": ""
+		},
+		"ls_AzureSqlDB_password": {
+			"value": ""
+		},
+		"ls_onPremFile_password": {
+			"value": ""
+		},
+		"AzureDatabricks_LS_properties_typeProperties_existingClusterId": {
+			"value": "0624-102401-ejz0soow"
+		},
+		"Https_ls_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/"
+		},
+		"datalake_ls_properties_typeProperties_url": {
+			"value": "https://adfkeshavstorage.dfs.core.windows.net/"
+		},
+		"ls_AzureSqlDB_properties_typeProperties_server": {
+			"value": "adfprojectserver123.database.windows.net"
+		},
+		"ls_AzureSqlDB_properties_typeProperties_database": {
+			"value": "adfprojectDB"
+		},
+		"ls_AzureSqlDB_properties_typeProperties_userName": {
+			"value": "serveradmin"
+		},
+		"ls_onPremFile_properties_typeProperties_host": {
+			"value": "C:\\Users\\user\\OneDrive\\Documents\\ADF_Project"
+		},
+		"ls_onPremFile_properties_typeProperties_userId": {
+			"value": "raghuvanshikeshav9@gmail.com"
+		}
+	}
+}
