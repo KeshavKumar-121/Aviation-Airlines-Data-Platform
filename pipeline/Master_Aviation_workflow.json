@@ -41,7 +41,7 @@
 					"method": "POST",
 					"url": "https://prod-22.eastasia.logic.azure.com:443/workflows/256645412ff64ee7a9bf270e838e0bd5/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=U5TnDIQ6U8IXK72WECopweujmb11vPZcihNVexa-WpA",
 					"body": {
-						"value": "{\n    \"PipelineName\": \"@{pipeline().Pipeline}\",\n    \"RunId\": \"@{pipeline().RunId}\",\n    \"ErrorMessage\": \"@{activity('ETL').error.message}\",\n    \"Time\": \"@{utcNow()}\"\n}",
+						"value": "{\n    \"pipeline_name\": \"@{pipeline().Pipeline}\",\n    \"run_id\": \"@{pipeline().RunId}\",\n    \"status\": \"Failed\",\n    \"error\": \"@{activity('ETL').error.message}\"\n}",
 						"type": "Expression"
 					}
 				}
