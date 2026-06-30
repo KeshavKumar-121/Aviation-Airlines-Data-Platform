@@ -75,7 +75,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_DimPassanger"
+					"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_DimAirport"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks_LS",
@@ -95,7 +95,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_DimPassanger"
+					"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_FactBookings"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks_LS",
