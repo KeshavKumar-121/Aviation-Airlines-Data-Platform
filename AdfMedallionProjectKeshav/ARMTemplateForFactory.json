@@ -149,7 +149,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSQLToDataLake')]",
+			"name": "[concat(parameters('factoryName'), '/AzureSQLToDataLake_Ingestion')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -364,6 +364,68 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Master_Aviation_workflow')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ETL",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "master_ETL",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Send Failure Email",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "ETL",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {},
+							"url": "https://prod-22.eastasia.logic.azure.com:443/workflows/256645412ff64ee7a9bf270e838e0bd5/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=U5TnDIQ6U8IXK72WECopweujmb11vPZcihNVexa-WpA",
+							"body": {
+								"value": "{\n    \"pipeline_name\": \"@{pipeline().Pipeline}\",\n    \"run_id\": \"@{pipeline().RunId}\",\n    \"status\": \"Failed\",\n    \"error\": \"@{activity('ETL').error.message}\"\n}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/master_ETL')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Master_DataIngestion')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -427,89 +489,16 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "AzureSQLToDataLake",
+								"referenceName": "AzureSQLToDataLake_Ingestion",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
 							"parameters": {}
 						}
-					},
-					{
-						"name": "Check_For_Failures",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "SQL Ingestion",
-								"dependencyConditions": [
-									"Completed"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@or(\n    or(\n        not(empty(activity('OnPrem Ingestion').error)),\n        not(empty(activity('API Ingestion').error))\n    ),\n    not(empty(activity('SQL Ingestion').error))\n)",
-								"type": "Expression"
-							},
-							"ifTrueActivities": [
-								{
-									"name": "Set Dynamic Error",
-									"type": "SetVariable",
-									"dependsOn": [],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "var_errormessage",
-										"value": {
-											"value": "@concat(\n    if(not(empty(activity('OnPrem Ingestion').error)), concat('❌ OnPrem Ingestion Failed: ', activity('OnPrem Ingestion').error.message, ' || '), ''),\n    if(not(empty(activity('API Ingestion').error)), concat('❌ API Ingestion Failed: ', activity('API Ingestion').error.message, ' || '), ''),\n    if(not(empty(activity('SQL Ingestion').error)), concat('❌ SQL Ingestion Failed: ', activity('SQL Ingestion').error.message), '')\n)",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Web1",
-									"type": "WebActivity",
-									"dependsOn": [
-										{
-											"activity": "Set Dynamic Error",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"method": "POST",
-										"headers": {},
-										"url": "https://prod-22.eastasia.logic.azure.com:443/workflows/256645412ff64ee7a9bf270e838e0bd5/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=U5TnDIQ6U8IXK72WECopweujmb11vPZcihNVexa-WpA",
-										"body": {
-											"value": "{\n    \"pipeline_name\": \"@{pipeline().Pipeline}\",\n    \"run_id\": \"@{pipeline().RunId}\",\n    \"status\": \"Failed\",\n    \"error\": \"@{variables('var_errormessage')}\"\n}",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						}
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
-				},
-				"variables": {
-					"var_errormessage": {
-						"type": "String",
-						"defaultValue": "\"\""
-					}
 				},
 				"annotations": [],
 				"lastPublishTime": "2026-06-14T14:05:43Z"
@@ -517,7 +506,166 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/onprem_dataingestion')]",
 				"[concat(variables('factoryId'), '/pipelines/API_Ingestion')]",
-				"[concat(variables('factoryId'), '/pipelines/AzureSQLToDataLake')]"
+				"[concat(variables('factoryId'), '/pipelines/AzureSQLToDataLake_Ingestion')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/master_ETL')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data Ingestion",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Master_DataIngestion",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Data Cleaning",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Data Ingestion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "master_silver_transformation",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "KPI Creation",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Data Cleaning",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "master_gold_transformation",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Master_DataIngestion')]",
+				"[concat(variables('factoryId'), '/pipelines/master_silver_transformation')]",
+				"[concat(variables('factoryId'), '/pipelines/master_gold_transformation')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/master_gold_transformation')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Gold_Airline_KPIs",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Aviation_Airline/Gold_Transformations/DimAirline_KPIs"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks_LS",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Gold_Passenger_KPIs",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Aviation_Airline/Gold_Transformations/DimPassenger_KPIs"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks_LS",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Gold_Route_and_Airport_KPIs",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Shared/Aviation_Airline/Gold_Transformations/Route & Airport Traffic KPIs"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks_LS",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks_LS')]"
 			]
 		},
 		{
@@ -599,7 +747,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_DimPassanger"
+							"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_DimAirport"
 						},
 						"linkedServiceName": {
 							"referenceName": "AzureDatabricks_LS",
@@ -619,7 +767,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_DimPassanger"
+							"notebookPath": "/Shared/Aviation_Airline/Silver_Transformation/Transform_FactBookings"
 						},
 						"linkedServiceName": {
 							"referenceName": "AzureDatabricks_LS",
