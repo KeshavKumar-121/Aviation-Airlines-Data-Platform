@@ -1,0 +1,20 @@
+flight_id,flight_number,departure_time,arrival_time
+101,UA234,08:30,11:45
+102,AI567,14:00,18:30
+103,DL901,22:00,01:30
+104,QF120,07:00,13:00
+105,LH456,16:00,20:00
+106,AF789,09:00,12:30
+107,EK321,23:30,03:00
+108,BA654,10:15,13:45
+109,SQ987,20:00,01:00
+110,CX432,06:00,10:00
+
+\item Contributed to enterprise analytics solutions using Microsoft Fabric and Power BI, delivering dashboards with business-driven KPIs for global stakeholders.
+\item Assisted in the migration and re-engineering of legacy SQL stored procedures and cloud-based data pipelines to Microsoft Fabric notebooks (PySpark).
+\item Analyzed data refresh failures and performance bottlenecks across Dev, UAT, and Production environments.
+\item Performed root-cause analysis (RCA), data validation, and reconciliation to resolve production issues and ensure accuracy.
+\item Worked closely with senior engineers and business stakeholders to deliver accurate, production-ready analytics solutions.
+
+this is my maq software experience section, I don't feel this section is good, listen I worked on migrating the architecture from on-prem+Azure to Fabric, in this I worked in migrating the master pipelines from Azrue to fabric, migrating databricks notebooks to fabric, migrating the stored procedures that was used to load data from upstream, to fabrick notebooks to do the same, actually previously they had tabular model and we use to pull data from upstream usin MDX in t-sql stored procedure, then now we have some upstream data in tabular model so we  used those mdx queries and created a sematic model then we used the sematic model data in our notebooks. For other upstream data we created shortcut on their lakehouse and directly used. 
+Before the migration start. I worked on those previous architecture including Azure pipelines, T-sql stored procedure, data validation in excel by creating pivot on source model and querying on our data from our DB and usin vlookup to calculate the differences. Then Updating the SPs with new businuee logic and all the stuff. 
